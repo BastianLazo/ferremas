@@ -1,0 +1,97 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>FERREMAS - Tu ferretería de confianza</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">FERREMAS</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="#">Inicio</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Productos</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Nosotros</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Contacto</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Banner principal -->
+<header class="bg-primary text-white text-center py-5">
+  <div class="container">
+    <h1 class="display-4">Bienvenido a FERREMAS</h1>
+    <p class="lead">Soluciones para tu proyecto de construcción, donde estés</p>
+    <a href="#" class="btn btn-light btn-lg">Ver catálogo</a>
+  </div>
+</header>
+
+<!-- Sección Nosotros -->
+<section class="py-5">
+  <div class="container">
+    <h2 class="text-center">¿Quiénes somos?</h2>
+    <p class="text-center">En FERREMAS somos una empresa chilena con más de 10 años ofreciendo productos de ferretería y construcción en todo el país. Con 7 sucursales y ahora con presencia online, llevamos calidad a tu hogar o proyecto.</p>
+  </div>
+</section>
+
+<!-- Productos destacados (simulado por ahora) -->
+<section class="bg-light py-5">
+  <div class="container">
+    <h2 class="text-center mb-4">Productos destacados</h2>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card h-100">
+          <img src="{% static 'images/martillo.jpg' %}" class="card-img-top" alt="Martillo">
+          <div class="card-body">
+            <h5 class="card-title">Martillo Clásico</h5>
+            <p class="card-text">$3.990</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100">
+          <img src="{% static 'images/atornillador.jpg' %}" class="card-img-top" alt="Atornillador">
+          <div class="card-body">
+            <h5 class="card-title">Atornillador Eléctrico</h5>
+            <p class="card-text">$19.990</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100">
+          <img src="{% static 'images/pintura.jpg' %}" class="card-img-top" alt="Pintura">
+          <div class="card-body">
+            <h5 class="card-title">Pintura Látex 5L</h5>
+            <p class="card-text">$12.990</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-dark text-white py-4">
+  <div class="container text-center">
+    <p>FERREMAS &copy; 2025 - Todos los derechos reservados</p>
+    <p>Contacto: contacto@ferremas.cl | +56 9 1234 5678</p>
+  </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+<!-- End of file home/templates/home/index.html -->
