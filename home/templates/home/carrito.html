@@ -1,0 +1,68 @@
+{% extends 'home/base_generic.html' %}
+{% block content %}
+{% load humanize %}
+
+{% load format_filters %}
+
+
+<a href="{% url 'productos' %}" class="btn btn-outline-secondary mb-3">← Volver a productos</a>
+
+<h2>Carrito de Compras</h2>
+
+{% if cart.cart %}
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Producto</th>
+        <th>Precio</th>
+        <th>Cantidad</th>
+        <th>Total</th>
+       
+      </tr>
+    </thead>
+    <tbody>
+        {% for key, item in cart.get_items %}
+        <tr>
+          <td class="d-flex align-items-center">
+            {% if item.imagen %}
+            <img src="{{ item.imagen }}" alt="{{ item.nombre }}" class="img-thumbnail me-2" style="width: 50px; height: 50px; object-fit: cover;">
+
+            {% endif %}
+            {{ item.nombre }}
+          </td>
+          <td>${{ item.precio|punto_miles }}</td>
+
+          <td>
+            <div class="btn-group" role="group" aria-label="Cantidad">
+              <a href="{% url 'decrementar_cantidad' key %}" class="btn btn-outline-secondary btn-sm" title="Disminuir">
+                <i class="fas fa-minus"></i>
+              </a>
+              <span class="btn btn-light btn-sm disabled">{{ item.cantidad }}</span>
+              <a href="{% url 'incrementar_cantidad' key %}" class="btn btn-outline-secondary btn-sm" title="Aumentar">
+                <i class="fas fa-plus"></i>
+              </a>
+              <a href="{% url 'eliminar_del_carrito' key %}" class="btn btn-outline-danger btn-sm ms-2" title="Eliminar">
+                <i class="fas fa-trash-alt"></i>
+              </a>
+              
+            </div>
+          </td>
+          <td>${{ item.total|punto_miles }}</td>
+
+
+
+      
+        </tr>
+        {% endfor %}
+      </tbody>
+      
+  </table>
+
+  <h4>Total: ${{ cart.get_total|punto_miles }}</h4>
+
+
+  <a href="{% url 'pagar' %}" class="btn btn-success">Pagar con Webpay (Flow)</a>
+{% else %}
+  <p>Tu carrito está vacío.</p>
+{% endif %}
+{% endblock %}
