@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Producto  # Asegúrate de importar tu modelo
+from .models import Producto  
 from .cart import Cart
 from .flow import crear_pago
 
@@ -11,7 +11,7 @@ def productos(request):
     return render(request, 'home/productos.html', {'productos': productos})
 
 
-from .cart import Cart  # ajusta el path si es necesario
+from .cart import Cart  
 
 def agregar_al_carrito(request, producto_id):
     producto = get_object_or_404(Producto, id=producto_id)
@@ -70,3 +70,5 @@ def decrementar_cantidad(request, producto_id):
     cart.subtract(producto)
     return redirect('ver_carrito')
 
+def contacto(request):
+    return render(request, 'home/contacto.html')
