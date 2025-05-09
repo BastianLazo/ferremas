@@ -106,9 +106,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Santiago'
 
 USE_I18N = True
 
@@ -132,5 +132,10 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 from decouple import config
 
-FLOW_API_KEY = '72E7C11F-CDFD-4C37-BE61-69D8D0LD2EA7'
-FLOW_SECRET_KEY = '0ca59d6d4630dd78ce7d9488fc7ae86cd9ad4c61'
+# settings.py
+
+MERCADOPAGO_ACCESS_TOKEN = "APP_USR-7949899935133965-050900-9ddcaf59cd0740a41c444a505a237169-648754272"  # reemplázalo por el real
+
+
+
+LOGIN_REDIRECT_URL = '/'

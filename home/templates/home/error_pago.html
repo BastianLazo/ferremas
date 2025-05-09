@@ -1,0 +1,10 @@
+{% extends "home/base_generic.html" %}
+
+
+{% block content %}
+  <div class="container">
+    <h2>Ocurrió un error al generar el pago</h2>
+    <p>{{ error }}</p>
+    <a href="{% url 'ver_carrito' %}" class="btn btn-primary">Volver al carrito</a>
+  </div>
+{% endblock %}

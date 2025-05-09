@@ -1,7 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Producto  
+from .models import Producto, UserProfile
 from .cart import Cart
-from .flow import crear_pago
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login, logout
+from django.contrib.auth.views import LoginView, LogoutView
+from .forms import CustomUserCreationForm
+from django.views.decorators.http import require_POST
+import mercadopago
+from django.conf import settings
+
+
 
 def homepage(request):
     return render(request, 'home/index.html')
@@ -42,17 +50,6 @@ def ver_carrito(request):
     return render(request, 'home/carrito.html', {'cart': cart})
 
 
-
-def pagar(request):
-    cart = Cart(request)
-    return_url = request.build_absolute_uri('/pago_exitoso/')
-    pago = crear_pago(cart, return_url)
-
-    if 'url' in pago:
-        return redirect(pago['url'])
-    else:
-        return redirect('ver_carrito')
-    
 def pago_exitoso(request):
     cart = Cart(request)
     cart.clear()
@@ -72,3 +69,78 @@ def decrementar_cantidad(request, producto_id):
 
 def contacto(request):
     return render(request, 'home/contacto.html')
+
+def register_view(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)  # inicia sesión automáticamente
+            return redirect('index')  # redirige al home o donde quieras
+    else:
+        form = UserCreationForm()
+    return render(request, 'home/register.html', {'form': form})
+
+def register_view(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.first_name = form.cleaned_data['first_name']
+            user.last_name = form.cleaned_data['last_name']
+            user.email = form.cleaned_data['email']
+            user.save()
+
+            # Crear perfil
+            profile = UserProfile.objects.create(
+                user=user,
+                rut=form.cleaned_data['rut'],
+                address=form.cleaned_data['address'],
+                phone=form.cleaned_data['phone']
+            )
+
+            login(request, user)
+            return redirect('homepage')
+
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'home/register.html', {'form': form})
+
+def custom_logout_view(request):
+    logout(request)
+    return redirect('homepage')
+
+from django.views.decorators.http import require_POST
+
+def pagar_mercadopago(request):
+    cart = Cart(request)
+    total = cart.get_total()
+
+    sdk = mercadopago.SDK(settings.MERCADOPAGO_ACCESS_TOKEN)
+
+    preference_data = {
+        "items": [
+            {
+                "title": "Compra en FERREMAS",
+                "quantity": 1,
+                "unit_price": float(total),
+            }
+        ],
+        "back_urls": {
+            "success": "https://www.google.com",  # temporal para pruebas
+            "failure": "https://www.google.com",
+            "pending": "https://www.google.com",
+        },
+        "auto_return": "approved",
+    }
+
+    preference_response = sdk.preference().create(preference_data)
+    print("Respuesta MercadoPago:", preference_response)
+
+    if "init_point" in preference_response["response"]:
+        init_point = preference_response["response"]["init_point"]
+        return redirect(init_point)
+    else:
+        return render(request, "home/error_pago.html", {
+            "error": preference_response["response"]
+        })

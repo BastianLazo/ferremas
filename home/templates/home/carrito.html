@@ -60,8 +60,15 @@
 
   <h4>Total: ${{ cart.get_total|punto_miles }}</h4>
 
+<form action="{% url 'pagar_mercado' %}" method="post">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-primary">Pagar con MercadoPago</button>
+</form>
 
-  <a href="{% url 'pagar' %}" class="btn btn-success">Pagar con Webpay (Flow)</a>
+
+
+
+
 {% else %}
   <p>Tu carrito está vacío.</p>
 {% endif %}
