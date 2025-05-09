@@ -4,7 +4,7 @@ from . import views
 
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import reverse_lazy
-from .views import register_view, pagar_mercadopago  # ✅ si estás usando pagar_mercadopago
+from .views import register_view, pagar_mercadopago  
 
 urlpatterns = [
     path('', views.homepage, name='homepage'),

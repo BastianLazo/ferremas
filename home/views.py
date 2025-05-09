@@ -41,7 +41,7 @@ def agregar_al_carrito(request, producto_id):
 def eliminar_del_carrito(request, producto_id):
     producto = get_object_or_404(Producto, id=producto_id)
     cart = Cart(request)
-    cart.remove(producto.id)  # Aquí va solo el ID, no el objeto
+    cart.remove(producto.id)  
     return redirect('ver_carrito')
 
 
@@ -58,7 +58,7 @@ def pago_exitoso(request):
 def incrementar_cantidad(request, producto_id):
     producto = get_object_or_404(Producto, id=producto_id)
     cart = Cart(request)
-    cart.add(producto, 1)  # suma uno
+    cart.add(producto, 1)  
     return redirect('ver_carrito')
 
 def decrementar_cantidad(request, producto_id):
@@ -75,8 +75,8 @@ def register_view(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)  # inicia sesión automáticamente
-            return redirect('index')  # redirige al home o donde quieras
+            login(request, user)  
+            return redirect('index') 
     else:
         form = UserCreationForm()
     return render(request, 'home/register.html', {'form': form})
@@ -127,7 +127,7 @@ def pagar_mercadopago(request):
             }
         ],
         "back_urls": {
-            "success": "https://www.google.com",  # temporal para pruebas
+            "success": "https://www.google.com",  
             "failure": "https://www.google.com",
             "pending": "https://www.google.com",
         },
