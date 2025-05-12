@@ -1,39 +1,36 @@
 {% extends 'home/base_generic.html' %}
+{% load static %}
 
-{% block title %}Contacto | FERREMAS{% endblock %}
+{% block title %}Contacto - FERREMAS{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h2 class="my-4 text-center">Contáctanos</h2>
+<div class="container mt-5">
+    <h2 class="mb-4">Contacto por WhatsApp</h2>
 
-    <div class="row">
-        <div class="col-md-6 mx-auto">
-            <form action="#" method="post">
-                {% csrf_token %}
-                <div class="mb-3">
-                    <label for="nombre" class="form-label">Nombre</label>
-                    <input type="text" class="form-control" id="nombre" name="nombre" required>
-                </div>
-                <div class="mb-3">
-                    <label for="email" class="form-label">Correo Electrónico</label>
-                    <input type="email" class="form-control" id="email" name="email" required>
-                </div>
-                <div class="mb-3">
-                    <label for="mensaje" class="form-label">Mensaje</label>
-                    <textarea class="form-control" id="mensaje" name="mensaje" rows="4" required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Enviar</button>
-            </form>
+    <!-- Mostrar mensajes de éxito o error -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Formulario de contacto -->
+    <form method="post" action="{% url 'contacto' %}">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="numero" class="form-label">Número de teléfono (sin +56):</label>
+            <input type="text" class="form-control" id="numero" name="numero" required placeholder="Ej: 912345678">
         </div>
-    </div>
 
-    <hr>
+        <div class="mb-3">
+            <label for="mensaje" class="form-label">Mensaje:</label>
+            <textarea class="form-control" id="mensaje" name="mensaje" rows="4" required placeholder="Escribe tu mensaje aquí..."></textarea>
+        </div>
 
-    <h4 class="text-center">O contáctanos directamente por correo</h4>
-    <div class="text-center">
-        <a href="mailto:contacto@ferremas.cl" class="btn btn-outline-primary">
-            <i class="fa fa-envelope"></i> Enviar un correo a contacto@ferremas.cl
-        </a>
-    </div>
+        <button type="submit" class="btn btn-primary">Enviar mensaje</button>
+    </form>
 </div>
 {% endblock %}

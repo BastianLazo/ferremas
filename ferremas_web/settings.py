@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -139,3 +140,8 @@ MERCADOPAGO_ACCESS_TOKEN = "APP_USR-7949899935133965-050900-9ddcaf59cd0740a41c44
 
 
 LOGIN_REDIRECT_URL = '/'
+
+from dotenv import load_dotenv # type: ignore
+load_dotenv()
+META_WA_TOKEN = os.getenv("META_WA_TOKEN")
+META_WA_PHONE_ID = os.getenv("META_WA_PHONE_ID")

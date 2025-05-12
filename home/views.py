@@ -8,7 +8,10 @@ from .forms import CustomUserCreationForm
 from django.views.decorators.http import require_POST
 import mercadopago
 from django.conf import settings
-
+import requests
+from django.contrib import messages
+from django.conf import settings
+import os
 
 
 def homepage(request):
@@ -144,3 +147,42 @@ def pagar_mercadopago(request):
         return render(request, "home/error_pago.html", {
             "error": preference_response["response"]
         })
+
+
+def contacto(request):
+    if request.method == 'POST':
+        numero = "56992249556"  # Número completo con código de país (Chile)
+
+        data = {
+            "messaging_product": "whatsapp",
+            "to": numero,
+            "type": "template",
+            "template": {
+                "name": "hello_world",
+                "language": {
+                    "code": "en_US"
+                }
+            }
+        }
+
+        headers = {
+            "Authorization": f"Bearer {settings.META_WA_TOKEN}",
+            "Content-Type": "application/json"
+        }
+
+        response = requests.post(
+            "https://graph.facebook.com/v22.0/641826565684472/messages",
+            headers=headers,
+            json=data
+        )
+
+        if response.status_code == 200:
+            messages.success(request, "Mensaje enviado exitosamente por WhatsApp.")
+        else:
+            messages.error(request, f"Error al enviar mensaje: {response.status_code} - {response.text}")
+
+        return redirect('contacto')
+
+    return render(request, 'home/contacto.html')
+
+
