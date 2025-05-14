@@ -1,0 +1,11 @@
+{% extends 'home/base_generic.html' %}
+{% block content %}
+<h2>¿Olvidaste tu contraseña?</h2>
+<p>Introduce tu correo y te enviaremos instrucciones para restablecerla.</p>
+<form method="post">
+  {% csrf_token %}
+  {{ form.email.label_tag }}
+  {{ form.email }}
+  <button type="submit" class="btn btn-primary">Enviar instrucciones</button>
+</form>
+{% endblock %}

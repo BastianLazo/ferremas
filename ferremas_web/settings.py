@@ -141,7 +141,18 @@ MERCADOPAGO_ACCESS_TOKEN = "APP_USR-7949899935133965-050900-9ddcaf59cd0740a41c44
 
 LOGIN_REDIRECT_URL = '/'
 
-from dotenv import load_dotenv # type: ignore
-load_dotenv()
+from dotenv import load_dotenv 
 META_WA_TOKEN = os.getenv("META_WA_TOKEN")
 META_WA_PHONE_ID = os.getenv("META_WA_PHONE_ID")
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'stavrakopulos@gmail.com'  
+EMAIL_HOST_PASSWORD = 'ygvl tbom oprf vthp'  
+DEFAULT_FROM_EMAIL = 'Ferremas <stavrakopulos@gmail.com>'
+
+
+
+

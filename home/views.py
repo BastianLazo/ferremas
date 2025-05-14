@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Producto, UserProfile
+from .models import Producto, UserProfile, Compra
 from .cart import Cart
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, logout
@@ -12,6 +12,9 @@ import requests
 from django.contrib import messages
 from django.conf import settings
 import os
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+
 
 
 def homepage(request):
@@ -186,3 +189,35 @@ def contacto(request):
     return render(request, 'home/contacto.html')
 
 
+def olvide_contrasena(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        try:
+            user = User.objects.get(username=username)
+            return redirect('restablecer_contrasena', username=user.username)
+        except User.DoesNotExist:
+            messages.error(request, 'El usuario no existe.')
+    return render(request, 'home/olvide_contrasena.html')
+
+
+def restablecer_contrasena(request, username):
+    if request.method == 'POST':
+        nueva_contra = request.POST.get('password')
+        confirmar_contra = request.POST.get('confirm_password')
+        if nueva_contra == confirmar_contra:
+            try:
+                user = User.objects.get(username=username)
+                user.set_password(nueva_contra)
+                user.save()
+                messages.success(request, 'Contraseña restablecida exitosamente.')
+                return redirect('login')  # ajusta si tu login tiene otro name
+            except User.DoesNotExist:
+                messages.error(request, 'Usuario no encontrado.')
+        else:
+            messages.error(request, 'Las contraseñas no coinciden.')
+    return render(request, 'home/restablecer_contrasena.html')
+
+@login_required
+def historial_compras(request):
+    compras = Compra.objects.filter(usuario=request.user).order_by('-fecha')
+    return render(request, 'home/historial_compras.html', {'compras': compras})

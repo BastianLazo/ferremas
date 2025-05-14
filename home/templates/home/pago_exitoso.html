@@ -1,2 +1,15 @@
-<h2>¡Gracias por tu compra!</h2>
-<p>Tu pago fue exitoso. Te contactaremos pronto.</p>
+from .models import Compra, CompraItem
+
+def pago_exitoso(request):
+    cart = Cart(request)
+    if request.user.is_authenticated:
+        compra = Compra.objects.create(usuario=request.user, total=cart.get_total())
+        for item in cart:
+            CompraItem.objects.create(
+                compra=compra,
+                producto=item['producto'],
+                cantidad=item['cantidad'],
+                precio_unitario=item['producto'].precio
+            )
+    cart.clear()
+    return render(request, 'home/pago_exitoso.html')
