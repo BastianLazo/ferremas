@@ -30,10 +30,10 @@ urlpatterns = [
     path('restablecer-contrasena/completo/', auth_views.PasswordResetCompleteView.as_view(template_name='home/password_reset_complete.html'), name='password_reset_complete'),
     path('historial/', views.historial_compras, name='historial_compras'),
     path('admin-home/', admin_home, name='admin_home'),
-path('admin-ferremas/productos/', views.listar_productos_admin, name='listar_productos_admin'),
-path('admin-ferremas/productos/agregar/', views.agregar_producto, name='agregar_producto'),
-path('admin-ferremas/productos/editar/<int:producto_id>/', views.editar_producto, name='editar_producto'),
-path('admin-ferremas/productos/eliminar/<int:producto_id>/', views.eliminar_producto, name='eliminar_producto'),
+    path('admin-ferremas/productos/', views.listar_productos_admin, name='listar_productos_admin'),
+    path('admin-ferremas/productos/agregar/', views.agregar_producto, name='agregar_producto'),
+    path('admin-ferremas/productos/editar/<int:producto_id>/', views.editar_producto, name='editar_producto'),
+    path('admin-ferremas/productos/eliminar/<int:producto_id>/', views.eliminar_producto, name='eliminar_producto'),
 
 
 

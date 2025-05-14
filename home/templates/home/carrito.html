@@ -61,10 +61,17 @@
 
   <h4>Total: ${{ cart.get_total|punto_miles }}</h4>
 
-<form action="{% url 'pagar_mercado' %}" method="post">
-  {% csrf_token %}
-  <button type="submit" class="btn btn-primary">Pagar con MercadoPago</button>
-</form>
+{% if user.is_authenticated %}
+  <form action="{% url 'pagar_mercado' %}" method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Pagar con MercadoPago</button>
+  </form>
+{% else %}
+  <div class="d-flex align-items-center gap-3 mt-2">
+    <button class="btn btn-primary" disabled>Pagar con MercadoPago</button>
+    <span class="text-danger">Debes iniciar sesión para realizar compras.</span>
+  </div>
+{% endif %}
 
 
 
