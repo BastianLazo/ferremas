@@ -7,9 +7,11 @@ class Producto(models.Model):
     descripcion = models.TextField()
     precio = models.DecimalField(max_digits=10, decimal_places=2)
     imagen = models.ImageField(upload_to='productos/', null=True, blank=True)
+    stock = models.PositiveIntegerField(default=0)  # ← Agrega esta línea
 
     def __str__(self):
         return self.nombre
+
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -36,3 +38,5 @@ class CompraItem(models.Model):
 
     def subtotal(self):
         return self.cantidad * self.precio_unitario
+
+

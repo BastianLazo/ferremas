@@ -14,8 +14,9 @@ from django.conf import settings
 import os
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-
-
+from django.urls import reverse_lazy
+from django.contrib.admin.views.decorators import staff_member_required
+import json
 
 def homepage(request):
     return render(request, 'home/index.html')
@@ -221,3 +222,104 @@ def restablecer_contrasena(request, username):
 def historial_compras(request):
     compras = Compra.objects.filter(usuario=request.user).order_by('-fecha')
     return render(request, 'home/historial_compras.html', {'compras': compras})
+
+
+from django.contrib.auth.views import LoginView
+from django.urls import reverse_lazy
+
+class CustomLoginView(LoginView):
+    template_name = 'home/login.html'  # usa tu plantilla actual
+
+    def get_success_url(self):
+        if self.request.user.is_superuser:
+            return reverse_lazy('admin_home')  # redirige al admin
+        return reverse_lazy('homepage')  # redirige al resto
+
+
+@login_required
+def admin_home(request):
+    return render(request, 'home/admin_home.html')
+
+
+class CustomLoginView(LoginView):
+    template_name = 'home/login.html'
+
+    def get_success_url(self):
+        if self.request.user.is_superuser:
+            return reverse_lazy('admin_home')
+        return reverse_lazy('homepage')
+
+
+
+
+@staff_member_required
+def admin_dashboard(request):
+    # Aquí puedes consultar ventas, productos, usuarios, etc.
+    return render(request, 'admin/dashboard.html')
+
+
+def admin_dashboard(request):
+    # Datos de prueba — puedes reemplazarlos con consultas reales
+    labels = ['Enero', 'Febrero', 'Marzo', 'Abril']
+    datos = [100000, 150000, 120000, 180000]
+
+    labels_productos = ['Clavos', 'Martillos', 'Taladros']
+    datos_productos = [40, 25, 35]
+
+    context = {
+        'labels': json.dumps(labels),
+        'datos': json.dumps(datos),
+        'labels_productos': json.dumps(labels_productos),
+        'datos_productos': json.dumps(datos_productos),
+    }
+
+    return render(request, 'admin/dashboard.html', context)
+
+
+from django.contrib.auth.decorators import user_passes_test
+
+# Solo accesible por superusuarios
+def es_admin(user):
+    return user.is_superuser
+
+@user_passes_test(es_admin)
+def listar_productos_admin(request):
+    productos = Producto.objects.all()
+    return render(request, 'admin/productos_list.html', {'productos': productos})
+
+@user_passes_test(es_admin)
+def agregar_producto(request):
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre')
+        descripcion = request.POST.get('descripcion')
+        precio = request.POST.get('precio')
+        imagen = request.FILES.get('imagen')
+        stock = request.POST.get('stock')
+        Producto.objects.create(nombre=nombre, descripcion=descripcion, precio=precio, imagen=imagen, stock=stock)
+        return redirect('listar_productos_admin')
+    return render(request, 'admin/producto_form.html')
+
+@user_passes_test(es_admin)
+@login_required
+def editar_producto(request, producto_id):
+    producto = get_object_or_404(Producto, id=producto_id)
+
+    if request.method == 'POST':
+        producto.nombre = request.POST['nombre']
+        producto.descripcion = request.POST['descripcion']
+        producto.precio = request.POST['precio']
+        producto.stock = request.POST['stock']
+        
+        if 'imagen' in request.FILES:
+            producto.imagen = request.FILES['imagen']
+
+        producto.save()
+        return redirect('listar_productos_admin')
+
+    return render(request, 'admin/producto_form.html', {'producto': producto})
+
+@user_passes_test(es_admin)
+def eliminar_producto(request, producto_id):
+    producto = get_object_or_404(Producto, id=producto_id)
+    producto.delete()
+    return redirect('listar_productos_admin')

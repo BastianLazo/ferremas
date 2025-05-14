@@ -1,0 +1,24 @@
+{% extends 'admin/admin_base.html' %}
+{% block content %}
+<h2>Listado de productos</h2>
+<a class="btn btn-success mb-3" href="{% url 'agregar_producto' %}">Agregar Producto</a>
+<table class="table table-bordered">
+    <thead>
+        <tr><th>Nombre</th><th>Precio</th><th>Stock</th><th>Acciones</th></tr>
+    </thead>
+    <tbody>
+        {% for p in productos %}
+        <tr>
+            <td>{{ p.nombre }}</td>
+<td>${{ p.precio|floatformat:0 }}</td>
+
+            <td>{{ p.stock }}</td>
+            <td>
+                <a href="{% url 'editar_producto' p.id %}" class="btn btn-warning btn-sm">Editar</a>
+                <a href="{% url 'eliminar_producto' p.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
