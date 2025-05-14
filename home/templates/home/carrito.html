@@ -37,7 +37,8 @@
               <a href="{% url 'decrementar_cantidad' key %}" class="btn btn-outline-secondary btn-sm" title="Disminuir">
                 <i class="fas fa-minus"></i>
               </a>
-              <span class="btn btn-light btn-sm disabled">{{ item.cantidad }}</span>
+              <span class="btn btn-outline-dark btn-sm" style="pointer-events: none;">{{ item.cantidad }}</span>
+
               <a href="{% url 'incrementar_cantidad' key %}" class="btn btn-outline-secondary btn-sm" title="Aumentar">
                 <i class="fas fa-plus"></i>
               </a>

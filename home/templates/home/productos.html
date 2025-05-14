@@ -7,22 +7,35 @@
 <div class="container">
   <div class="row">
     {% for producto in productos %}
-      <div class="col-md-4">
-        <div class="card h-100">
-            <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}">
-            <div class="card-body">
-              <h5 class="card-title">{{ producto.nombre }}</h5>
-              <p>Precio: ${{ producto.precio|punto_miles }}</p>
+    <div class="col-md-4">
+      <div class="card h-100">
+        <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}">
+        <div class="card-body">
+          <h5 class="card-title">{{ producto.nombre }}</h5>
+          {% if producto.descuento > 0 %}
+          <p>
+            <del class="text-muted">${{ producto.precio|punto_miles }}</del><br>
+            <strong class="text-success">${{ producto|precio_con_descuento|punto_miles }}</strong><br>
+            <span class="badge bg-danger">{{ producto.descuento }}% DCTO</span>
+          </p>
+          {% else %}
+          <p>Precio: ${{ producto.precio|punto_miles }}</p>
+          {% endif %}
 
-            </p>
-              <form action="{% url 'agregar_al_carrito' producto.id %}" method="post" class="d-flex align-items-center">
-                {% csrf_token %}
-                <input type="number" name="cantidad" value="1" min="1" max="10" class="form-control me-2" style="width: 70px;">
-                <button type="submit" class="btn btn-primary">Agregar al carrito</button>
-              </form>
-            </div>
+
+          </p>
+          {% if producto.stock > 0 %}
+  <form action="{% url 'agregar_al_carrito' producto.id %}" method="post" class="d-flex align-items-center">
+    {% csrf_token %}
+    <input type="number" name="cantidad" value="1" min="1" max="{{ producto.stock }}" class="form-control me-2" style="width: 70px;">
+    <button type="submit" class="btn btn-primary">Agregar al carrito</button>
+  </form>
+{% else %}
+  <span class="badge bg-secondary">Sin stock</span>
+{% endif %}
         </div>
       </div>
+    </div>
     {% endfor %}
   </div>
 </div>

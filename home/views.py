@@ -18,6 +18,8 @@ from django.urls import reverse_lazy
 from django.contrib.admin.views.decorators import staff_member_required
 import json
 
+
+
 def homepage(request):
     return render(request, 'home/index.html')
 
@@ -252,33 +254,9 @@ class CustomLoginView(LoginView):
 
 
 
-@staff_member_required
-def admin_dashboard(request):
-    # Aquí puedes consultar ventas, productos, usuarios, etc.
-    return render(request, 'admin/dashboard.html')
-
-
-def admin_dashboard(request):
-    # Datos de prueba — puedes reemplazarlos con consultas reales
-    labels = ['Enero', 'Febrero', 'Marzo', 'Abril']
-    datos = [100000, 150000, 120000, 180000]
-
-    labels_productos = ['Clavos', 'Martillos', 'Taladros']
-    datos_productos = [40, 25, 35]
-
-    context = {
-        'labels': json.dumps(labels),
-        'datos': json.dumps(datos),
-        'labels_productos': json.dumps(labels_productos),
-        'datos_productos': json.dumps(datos_productos),
-    }
-
-    return render(request, 'admin/dashboard.html', context)
-
-
 from django.contrib.auth.decorators import user_passes_test
 
-# Solo accesible por superusuarios
+
 def es_admin(user):
     return user.is_superuser
 
@@ -295,7 +273,8 @@ def agregar_producto(request):
         precio = request.POST.get('precio')
         imagen = request.FILES.get('imagen')
         stock = request.POST.get('stock')
-        Producto.objects.create(nombre=nombre, descripcion=descripcion, precio=precio, imagen=imagen, stock=stock)
+        descuento = request.POST.get('descuento', 0)
+        Producto.objects.create(nombre=nombre, descripcion=descripcion, precio=precio, imagen=imagen, stock=stock,descuento=descuento)
         return redirect('listar_productos_admin')
     return render(request, 'admin/producto_form.html')
 
@@ -309,7 +288,8 @@ def editar_producto(request, producto_id):
         producto.descripcion = request.POST['descripcion']
         producto.precio = request.POST['precio']
         producto.stock = request.POST['stock']
-        
+        producto.descuento = request.POST.get('descuento', 0)
+
         if 'imagen' in request.FILES:
             producto.imagen = request.FILES['imagen']
 
@@ -323,3 +303,5 @@ def eliminar_producto(request, producto_id):
     producto = get_object_or_404(Producto, id=producto_id)
     producto.delete()
     return redirect('listar_productos_admin')
+
+

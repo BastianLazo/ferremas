@@ -20,7 +20,8 @@
 
         <div class="mb-3">
             <label for="precio" class="form-label">Precio:</label>
-            <input type="number" name="precio" step="1" class="form-control" value="{{ producto.precio|floatformat:0 }}" required>
+            <input type="number" name="precio" step="1" class="form-control" value="{{ producto.precio|floatformat:0 }}"
+                required>
 
         </div>
 
@@ -37,6 +38,11 @@
             <p class="text-muted">No hay imagen</p>
             {% endif %}
             <input type="file" name="imagen" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label for="descuento" class="form-label">Descuento (%)</label>
+            <input type="number" class="form-control" id="descuento" name="descuento"
+                value="{{ producto.descuento|default:0 }}">
         </div>
 
         <div class="d-flex justify-content-between">

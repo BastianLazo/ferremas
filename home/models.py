@@ -7,7 +7,11 @@ class Producto(models.Model):
     descripcion = models.TextField()
     precio = models.DecimalField(max_digits=10, decimal_places=2)
     imagen = models.ImageField(upload_to='productos/', null=True, blank=True)
-    stock = models.PositiveIntegerField(default=0)  # ← Agrega esta línea
+    stock = models.PositiveIntegerField(default=0)
+    descuento = models.PositiveIntegerField(default=0)  # nuevo campo
+
+    def precio_final(self):
+        return self.precio * (1 - (self.descuento / 100))
 
     def __str__(self):
         return self.nombre
@@ -40,3 +44,11 @@ class CompraItem(models.Model):
         return self.cantidad * self.precio_unitario
 
 
+class CodigoDescuento(models.Model):
+    codigo = models.CharField(max_length=50, unique=True)
+    descuento_porcentaje = models.DecimalField(max_digits=5, decimal_places=2, help_text="Ej: 10 para 10%")
+    activo = models.BooleanField(default=True)
+    fecha_expiracion = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.codigo} ({self.descuento_porcentaje}%)"
