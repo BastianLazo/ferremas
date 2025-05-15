@@ -14,6 +14,7 @@ class Cart:
 
         if producto_id in self.cart:
             self.cart[producto_id]['cantidad'] += cantidad
+        else:
             self.cart[producto_id] = {
                 'producto_id': producto.id,
                 'nombre': producto.nombre,
@@ -23,9 +24,10 @@ class Cart:
                 'descuento': descuento,
                 'precio_original': precio_base,
                 'ahorro': round(precio_base - precio_final, 2)
-        }
+            }
 
         self.save()
+
 
 
     def save(self):
