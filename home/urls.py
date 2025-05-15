@@ -32,6 +32,11 @@ urlpatterns = [
     path('admin-ferremas/productos/agregar/', views.agregar_producto, name='agregar_producto'),
     path('admin-ferremas/productos/editar/<int:producto_id>/', views.editar_producto, name='editar_producto'),
     path('admin-ferremas/productos/eliminar/<int:producto_id>/', views.eliminar_producto, name='eliminar_producto'),
+    path('bodega/', views.bodeguero_home, name='bodeguero_home'),
+    path('bodega/productos/', views.listar_productos_bodeguero, name='listar_productos_bodeguero'),
+    path('bodega/productos/editar/<int:producto_id>/', views.editar_stock_bodeguero, name='editar_stock_bodeguero'),
+    path('bodega/productos/agregar/', views.agregar_producto_bodeguero, name='agregar_producto_bodeguero'),
+    
 
 
 

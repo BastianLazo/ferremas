@@ -1,0 +1,37 @@
+{% extends 'bodega/bodeguero_base.html' %}
+
+{% block content %}
+<h2>Productos - Gestión de Stock</h2>
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Stock</th>
+      <th>Estado</th> 
+      <th>Acciones</th>
+    </tr>
+  </thead>
+ <tbody>
+  {% for producto in productos %}
+  <tr>
+    
+    <td>{{ producto.nombre }}</td>
+    <td>{{ producto.stock }}</td>
+    <td>
+      {% if producto.stock < 5 %}
+        <span class="badge bg-danger">Stock bajo</span>
+      {% else %}
+        <span class="badge bg-success">Stock OK</span>
+      {% endif %}
+    </td>
+    <td>
+        
+      <a href="{% url 'editar_stock_bodeguero' producto.id %}" class="btn btn-warning btn-sm">Editar Stock</a>
+    </td>
+    
+  </tr>
+  
+  {% endfor %}
+</tbody>
+</table>
+{% endblock %}

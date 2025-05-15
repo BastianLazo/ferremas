@@ -1,0 +1,7 @@
+{% extends 'bodega/bodeguero_base.html' %}
+
+{% block content %}
+<h2>Bienvenido, {{ user.username }}</h2>
+<p>Este es tu panel exclusivo de bodega.</p>
+<a href="{% url 'listar_productos_bodeguero' %}" class="btn btn-primary">Ir a productos</a>
+{% endblock %}

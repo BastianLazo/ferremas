@@ -17,7 +17,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.contrib.admin.views.decorators import staff_member_required
 import json
-
+from django.contrib.auth.decorators import user_passes_test
 
 
 def homepage(request):
@@ -230,27 +230,21 @@ from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
 
 class CustomLoginView(LoginView):
-    template_name = 'home/login.html'  # usa tu plantilla actual
+    template_name = 'home/login.html'
 
     def get_success_url(self):
-        if self.request.user.is_superuser:
-            return reverse_lazy('admin_home')  # redirige al admin
-        return reverse_lazy('homepage')  # redirige al resto
+        user = self.request.user
+        if user.is_superuser:
+            return reverse_lazy('admin_home')
+        elif user.groups.filter(name='Bodeguero').exists():
+            return reverse_lazy('bodeguero_home')
+        return reverse_lazy('homepage')  # ✅ ESTA ES LA CORRECTA
+
 
 
 @login_required
 def admin_home(request):
     return render(request, 'home/admin_home.html')
-
-
-class CustomLoginView(LoginView):
-    template_name = 'home/login.html'
-
-    def get_success_url(self):
-        if self.request.user.is_superuser:
-            return reverse_lazy('admin_home')
-        return reverse_lazy('homepage')
-
 
 
 
@@ -303,5 +297,54 @@ def eliminar_producto(request, producto_id):
     producto = get_object_or_404(Producto, id=producto_id)
     producto.delete()
     return redirect('listar_productos_admin')
+
+
+def es_bodeguero(user):
+    return user.groups.filter(name='Bodeguero').exists()
+
+@user_passes_test(es_bodeguero)
+def bodeguero_home(request):
+    return render(request, 'bodega/bodeguero_home.html')
+
+@user_passes_test(es_bodeguero)
+def listar_productos_bodeguero(request):
+    productos = Producto.objects.all()
+    return render(request, 'bodega/productos_list.html', {'productos': productos})
+
+@user_passes_test(es_bodeguero)
+def editar_stock_bodeguero(request, producto_id):
+    producto = get_object_or_404(Producto, id=producto_id)
+
+    if request.method == 'POST':
+        nuevo_stock = request.POST.get('stock')
+        if nuevo_stock.isdigit():
+            producto.stock = int(nuevo_stock)
+            producto.save()
+            return redirect('listar_productos_bodeguero')
+
+    return render(request, 'bodega/editar_stock.html', {'producto': producto})
+
+
+@user_passes_test(es_bodeguero)
+def agregar_producto_bodeguero(request):
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre')
+        descripcion = request.POST.get('descripcion')
+        precio = request.POST.get('precio')
+        stock = request.POST.get('stock')
+        imagen = request.FILES.get('imagen')
+
+        Producto.objects.create(
+            nombre=nombre,
+            descripcion=descripcion,
+            precio=precio,
+            stock=stock,
+            imagen=imagen
+        )
+
+        return redirect('listar_productos_bodeguero')
+
+    return render(request, 'bodega/agregar_producto.html')
+
 
 
