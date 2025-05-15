@@ -11,15 +11,29 @@
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'admin_home' %}">Panel Admin Ferremas</a>
-            <a class="nav-link" href="{% url 'listar_productos_admin' %}">Gestionar Productos</a>
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'admin_home' %}">Panel Admin Ferremas</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarAdmin"
+            aria-controls="navbarAdmin" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
+        <div class="collapse navbar-collapse" id="navbarAdmin">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Cerrar sesión</a></li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'listar_productos_admin' %}">Gestionar Productos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'revisar_solicitudes' %}">Ver Solicitudes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">Cerrar sesión</a>
+                </li>
             </ul>
         </div>
-    </nav>
+    </div>
+</nav>
+
 
     <div class="container mt-4">
         {% block content %}{% endblock %}

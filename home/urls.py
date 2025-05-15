@@ -36,7 +36,15 @@ urlpatterns = [
     path('bodega/productos/', views.listar_productos_bodeguero, name='listar_productos_bodeguero'),
     path('bodega/productos/editar/<int:producto_id>/', views.editar_stock_bodeguero, name='editar_stock_bodeguero'),
     path('bodega/productos/agregar/', views.agregar_producto_bodeguero, name='agregar_producto_bodeguero'),
-    
+    path('bodega/solicitar-agregar/', views.solicitar_agregar_producto, name='solicitar_agregar_producto'),
+    path('admin/solicitudes/', views.revisar_solicitudes, name='revisar_solicitudes'),
+    path('admin/solicitudes/aprobar/<int:solicitud_id>/', views.aprobar_solicitud, name='aprobar_solicitud'),
+    path('bodega/mis-solicitudes/', views.ver_solicitudes_bodeguero, name='ver_solicitudes_bodeguero'),
+    path('panel/solicitudes/', views.revisar_solicitudes, name='revisar_solicitudes'),
+    path('panel/solicitudes/aprobar/<int:solicitud_id>/', views.aprobar_solicitud, name='aprobar_solicitud'),
+    path('panel/solicitudes/rechazar/<int:solicitud_id>/', views.rechazar_solicitud, name='rechazar_solicitud'),
+
+
 
 
 

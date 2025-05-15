@@ -18,6 +18,8 @@ from django.urls import reverse_lazy
 from django.contrib.admin.views.decorators import staff_member_required
 import json
 from django.contrib.auth.decorators import user_passes_test
+from .models import SolicitudProducto, Producto
+from django.utils import timezone
 
 
 def homepage(request):
@@ -348,3 +350,95 @@ def agregar_producto_bodeguero(request):
 
 
 
+@user_passes_test(es_bodeguero)
+def solicitar_agregar_producto(request):
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre')
+        descripcion = request.POST.get('descripcion')
+        precio = request.POST.get('precio')
+        stock = request.POST.get('stock')
+        imagen = request.FILES.get('imagen')
+
+        SolicitudProducto.objects.create(
+            nombre=nombre,
+            descripcion=descripcion,
+            precio=precio,
+            stock=stock,
+            imagen=imagen,
+            creado_por=request.user
+        )
+
+        messages.success(request, "Solicitud enviada al administrador.")
+        return redirect('listar_productos_bodeguero')
+
+    return render(request, 'bodega/solicitar_agregar_producto.html')
+
+
+@user_passes_test(es_admin)
+def revisar_solicitudes(request):
+    solicitudes = SolicitudProducto.objects.filter(aprobado=False)
+    return render(request, 'admin/solicitudes_pendientes.html', {'solicitudes': solicitudes})
+
+@user_passes_test(es_admin)
+def aprobar_solicitud(request, solicitud_id):
+    solicitud = get_object_or_404(SolicitudProducto, id=solicitud_id)
+
+    # Crear producto real
+    Producto.objects.create(
+        nombre=solicitud.nombre,
+        descripcion=solicitud.descripcion,
+        precio=solicitud.precio,
+        stock=solicitud.stock,
+        imagen=solicitud.imagen
+    )
+
+    solicitud.aprobado = True
+    solicitud.save()
+    return redirect('revisar_solicitudes')
+
+
+@user_passes_test(es_bodeguero)
+def ver_solicitudes_bodeguero(request):
+    solicitudes = SolicitudProducto.objects.filter(creado_por=request.user).order_by('-fecha_creacion')
+    return render(request, 'bodega/mis_solicitudes.html', {'solicitudes': solicitudes})
+
+
+
+@staff_member_required
+def revisar_solicitudes(request):
+    solicitudes = SolicitudProducto.objects.filter(aprobado=False, rechazado=False)
+    return render(request, 'admin/solicitudes_pendientes.html', {'solicitudes': solicitudes})
+
+
+@staff_member_required
+def aprobar_solicitud(request, solicitud_id):
+    solicitud = get_object_or_404(SolicitudProducto, id=solicitud_id)
+
+    # Crear producto aprobado
+    Producto.objects.create(
+        nombre=solicitud.nombre,
+        descripcion=solicitud.descripcion,
+        precio=solicitud.precio,
+        stock=solicitud.stock,
+        imagen=solicitud.imagen
+    )
+
+    solicitud.aprobado = True
+    solicitud.save()
+
+    return redirect('revisar_solicitudes')
+
+
+@staff_member_required
+def rechazar_solicitud(request, solicitud_id):
+    solicitud = get_object_or_404(SolicitudProducto, id=solicitud_id)
+
+    if request.method == 'POST':
+        motivo = request.POST.get('motivo')
+        solicitud.rechazado = True
+        solicitud.motivo_rechazo = motivo
+        solicitud.save()
+        messages.success(request, "La solicitud ha sido rechazada.")
+        return redirect('revisar_solicitudes')
+
+    return render(request, 'admin/rechazar_solicitud.html', {'solicitud': solicitud})

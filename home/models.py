@@ -52,3 +52,20 @@ class CodigoDescuento(models.Model):
 
     def __str__(self):
         return f"{self.codigo} ({self.descuento_porcentaje}%)"
+
+
+class SolicitudProducto(models.Model):
+    nombre = models.CharField(max_length=100)
+    descripcion = models.TextField()
+    precio = models.DecimalField(max_digits=10, decimal_places=2)
+    stock = models.PositiveIntegerField()
+    imagen = models.ImageField(upload_to='solicitudes/', null=True, blank=True)
+    creado_por = models.ForeignKey(User, on_delete=models.CASCADE)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    aprobado = models.BooleanField(default=False)
+    rechazado = models.BooleanField(default=False)
+    motivo_rechazo = models.TextField(blank=True, null=True)
+
+
+    def __str__(self):
+        return f"Solicitud: {self.nombre} (por {self.creado_por.username})"

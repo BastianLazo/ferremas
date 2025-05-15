@@ -1,0 +1,15 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block content %}
+<h2>Rechazar solicitud: {{ solicitud.nombre }}</h2>
+
+<form method="post">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label for="motivo" class="form-label">Motivo del rechazo</label>
+    <textarea id="motivo" name="motivo" class="form-control" required></textarea>
+  </div>
+  <button type="submit" class="btn btn-danger">Rechazar</button>
+  <a href="{% url 'revisar_solicitudes' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}
