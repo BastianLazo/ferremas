@@ -20,5 +20,7 @@ def precio_con_descuento(producto):
             precio_final = precio * (1 - descuento / 100)
             return f"{precio_final:,.0f}".replace(",", ".")  
         return f"{precio:,.0f}".replace(",", ".")
-    except:
+    except: 
         return producto.precio
+    
+   

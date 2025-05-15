@@ -8,17 +8,25 @@ class Cart:
 
     def add(self, producto, cantidad=1):
         producto_id = str(producto.id)
+        precio_base = float(producto.precio)
+        descuento = float(producto.descuento or 0)
+        precio_final = precio_base * (1 - (descuento / 100))
+
         if producto_id in self.cart:
             self.cart[producto_id]['cantidad'] += cantidad
-        else:
             self.cart[producto_id] = {
                 'producto_id': producto.id,
                 'nombre': producto.nombre,
-                'precio': float(producto.precio),
+                'precio': round(precio_final, 2),
                 'cantidad': cantidad,
-                'imagen': producto.imagen.url if producto.imagen else ''
-            }
+                'imagen': producto.imagen.url if producto.imagen else '',
+                'descuento': descuento,
+                'precio_original': precio_base,
+                'ahorro': round(precio_base - precio_final, 2)
+        }
+
         self.save()
+
 
     def save(self):
         self.session['cart'] = self.cart

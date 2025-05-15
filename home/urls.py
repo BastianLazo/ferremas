@@ -14,7 +14,6 @@ urlpatterns = [
     path('carrito/eliminar/<int:producto_id>/', views.eliminar_del_carrito, name='eliminar_del_carrito'),
     path('pago_exitoso/', views.pago_exitoso, name='pago_exitoso'),
     path('carrito/pagar/', views.pagar_mercadopago, name='pagar_mercadopago'),
-
     path('carrito/incrementar/<int:producto_id>/', views.incrementar_cantidad, name='incrementar_cantidad'),
     path('carrito/decrementar/<int:producto_id>/', views.decrementar_cantidad, name='decrementar_cantidad'),
     path('contacto/', views.contacto, name='contacto'),
@@ -22,7 +21,6 @@ urlpatterns = [
     path('login/', CustomLoginView.as_view(), name='login'),
     path('logout/', views.custom_logout_view, name='logout'),
     path('carrito/pagar/', views.pagar_mercadopago, name='pagar'),
-
     path('pagar-mercado/', views.pagar_mercadopago, name='pagar_mercado'),
     path('olvide-contrasena/', auth_views.PasswordResetView.as_view(template_name='home/olvide_contrasena.html'), name='password_reset'),
     path('olvide-contrasena/enviado/', auth_views.PasswordResetDoneView.as_view(template_name='home/password_reset_done.html'), name='password_reset_done'),

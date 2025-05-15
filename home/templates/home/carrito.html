@@ -10,67 +10,92 @@
 <h2>Carrito de Compras</h2>
 
 {% if cart.cart %}
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Producto</th>
-        <th>Precio</th>
-        <th>Cantidad</th>
-        <th>Total</th>
-       
-      </tr>
-    </thead>
-    <tbody>
-        {% for key, item in cart.get_items %}
-        <tr>
-          <td class="d-flex align-items-center">
-            {% if item.imagen %}
-            <img src="{{ item.imagen }}" alt="{{ item.nombre }}" class="img-thumbnail me-2" style="width: 50px; height: 50px; object-fit: cover;">
+<table class="table">
+  <thead>
+    <tr>
+      <th>Producto</th>
+      <th>Precio</th>
+      <th>Descuento</th>
+      <th>Cantidad</th>
+      <th>Total</th>
 
-            {% endif %}
-            {{ item.nombre }}
-          </td>
-          <td>${{ item.precio|punto_miles }}</td>
+    </tr>
+  </thead>
+  <tbody>
+    {% for key, item in cart.get_items %}
+    <tr>
+      <td class="d-flex align-items-center">
+        {% if item.imagen %}
+        <img src="{{ item.imagen }}" alt="{{ item.nombre }}" class="img-thumbnail me-2"
+          style="width: 50px; height: 50px; object-fit: cover;">
 
-          <td>
-            <div class="btn-group" role="group" aria-label="Cantidad">
-              <a href="{% url 'decrementar_cantidad' key %}" class="btn btn-outline-secondary btn-sm" title="Disminuir">
-                <i class="fas fa-minus"></i>
-              </a>
-              <span class="btn btn-outline-dark btn-sm" style="pointer-events: none;">{{ item.cantidad }}</span>
-
-              <a href="{% url 'incrementar_cantidad' key %}" class="btn btn-outline-secondary btn-sm" title="Aumentar">
-                <i class="fas fa-plus"></i>
-              </a>
-              <a href="{% url 'eliminar_del_carrito' key %}" class="btn btn-outline-danger btn-sm ms-2" title="Eliminar">
-                <i class="fas fa-trash-alt"></i>
-              </a>
-              
-            </div>
-          </td>
-          <td>${{ item.total|punto_miles }}</td>
+        {% endif %}
+        {{ item.nombre }}
+      </td>
+   
+<td>
+  {% if item.descuento > 0 %}
+    <span class="text-decoration-line-through text-danger">${{ item.precio_original|punto_miles }}</span><br>
+    <strong>${{ item.precio|punto_miles }}</strong><br>
+    <small class="text-success">Ahorras ${{ item.ahorro|punto_miles }}</small>
+  {% else %}
+    ${{ item.precio|punto_miles }}
+  {% endif %}
+</td>
 
 
 
-      
-        </tr>
-        {% endfor %}
-      </tbody>
-      
-  </table>
 
-  <h4>Total: ${{ cart.get_total|punto_miles }}</h4>
+
+<td>
+  {% if item.descuento > 0 %}
+    <span class="badge bg-success">{{ item.descuento|floatformat:0 }}%</span>
+  {% else %}
+    -
+  {% endif %}
+</td>
+
+
+
+      <td>
+        <div class="btn-group" role="group" aria-label="Cantidad">
+          <a href="{% url 'decrementar_cantidad' key %}" class="btn btn-outline-secondary btn-sm" title="Disminuir">
+            <i class="fas fa-minus"></i>
+          </a>
+          <span class="btn btn-outline-dark btn-sm" style="pointer-events: none;">{{ item.cantidad }}</span>
+
+          <a href="{% url 'incrementar_cantidad' key %}" class="btn btn-outline-secondary btn-sm" title="Aumentar">
+            <i class="fas fa-plus"></i>
+          </a>
+          <a href="{% url 'eliminar_del_carrito' key %}" class="btn btn-outline-danger btn-sm ms-2" title="Eliminar">
+            <i class="fas fa-trash-alt"></i>
+          </a>
+
+        </div>
+      </td>
+      <td>${{ item.total|punto_miles }}</td>
+
+
+
+
+    </tr>
+    {% endfor %}
+  </tbody>
+
+</table>
+
+<h4>Total: ${{ cart.get_total|punto_miles }}</h4>
 
 {% if user.is_authenticated %}
-  <form action="{% url 'pagar_mercado' %}" method="post">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-primary">Pagar con MercadoPago</button>
-  </form>
+<form action="{% url 'pagar_mercado' %}" method="post">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-primary">Pagar con MercadoPago</button>
+</form>
 {% else %}
-  <div class="d-flex align-items-center gap-3 mt-2">
-    <button class="btn btn-primary" disabled>Pagar con MercadoPago</button>
-    <span class="text-danger">Debes iniciar sesión para realizar compras.</span>
-  </div>
+<div class="d-flex align-items-center gap-3 mt-2">
+  <button class="btn btn-primary" disabled>Pagar con MercadoPago</button>
+  <span class="text-danger">Debes iniciar sesión para realizar compras.</span>
+</div>
 {% endif %}
 
 
@@ -78,6 +103,6 @@
 
 
 {% else %}
-  <p>Tu carrito está vacío.</p>
+<p>Tu carrito está vacío.</p>
 {% endif %}
 {% endblock %}
