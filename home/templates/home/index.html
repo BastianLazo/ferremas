@@ -1,53 +1,85 @@
 {% extends 'home/base_generic.html' %}
 {% load static %}
 {% block content %}
-<!-- Banner principal -->
-<header class="bg-primary text-white text-center py-5">
+<!-- Banner principal con fondo degradado -->
+<header class="text-white text-center py-5" style="background: linear-gradient(135deg, #004E92, #000428);">
   <div class="container">
-    <h1 class="display-4">Bienvenido a FERREMAS</h1>
-    <p class="lead">Soluciones para tu proyecto de construcción, donde estés</p>
-    <a href="{% url 'productos' %}" class="btn btn-light btn-lg">Ver productos</a>
-
+    <h1 class="display-4 fw-bold">Bienvenido a FERREMAS</h1>
+    <p class="lead mb-4">Soluciones para tu proyecto de construcción, donde estés</p>
+    <a href="{% url 'productos' %}" class="btn btn-light btn-lg shadow-sm">Ver productos</a>
   </div>
 </header>
 
-<!-- Sección Nosotros -->
-<section class="py-5">
+<!-- Carrusel de productos dinámico -->
+<section class="py-5 bg-light">
   <div class="container">
-    <h2 class="text-center">¿Quiénes somos?</h2>
-    <p class="text-center">En FERREMAS somos una empresa chilena con más de 10 años ofreciendo productos de ferretería y construcción en todo el país. Con 7 sucursales y ahora con presencia online, llevamos calidad a tu hogar o proyecto.</p>
+    <h2 class="text-center mb-5 fw-semibold">Lo más destacado</h2>
+    <div id="carruselProductos" class="carousel slide shadow rounded" data-bs-ride="carousel" style="max-width: 700px; margin: auto;">
+      <div class="carousel-inner">
+        {% for producto in productos %}
+          <div class="carousel-item {% if forloop.first %}active{% endif %}">
+            <div class="row justify-content-center">
+              <div class="col-md-8">
+                <img src="{{ producto.imagen.url }}" class="d-block w-100 rounded" alt="{{ producto.nombre }}" style="object-fit: cover; max-height: 400px;">
+                <div class="text-center mt-3">
+                  <h5 class="fw-semibold">{{ producto.nombre }}</h5>
+                  <p class="fs-5 text-primary">${{ producto.precio }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#carruselProductos" data-bs-slide="prev" style="opacity: 1;">
+        <span class="carousel-control-prev-icon" aria-hidden="true" style="background-color: rgba(0,0,0,0.6); padding: 15px; border-radius: 50%;"></span>
+        <span class="visually-hidden">Anterior</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carruselProductos" data-bs-slide="next" style="opacity: 1;">
+        <span class="carousel-control-next-icon" aria-hidden="true" style="background-color: rgba(0,0,0,0.6); padding: 15px; border-radius: 50%;"></span>
+        <span class="visually-hidden">Siguiente</span>
+      </button>
+    </div>
   </div>
 </section>
 
-<!-- Productos destacados (simulado por ahora) -->
-<section class="bg-light py-5">
+<!-- Categorías populares -->
+<section class="bg-white py-5 border-top">
   <div class="container">
-    <h2 class="text-center mb-4">Productos destacados</h2>
-    <div class="row">
-      <div class="col-md-4">
-        <div class="card h-100">
-          <img src="{% static 'images/Martillo.png' %}" class="card-img-top" alt="Martillo">
-          <div class="card-body">
-            <h5 class="card-title">Martillo Clásico</h5>
-            <p class="card-text">$3.990</p>
+    <h2 class="text-center mb-5 fw-semibold">Categorías Populares</h2>
+    <div class="row g-4">
+      <!-- Tarjeta ejemplo, repetir -->
+      <div class="col-md-4 position-relative">
+        <div class="card h-100 shadow-sm border-0 rounded-4 hover-shadow">
+          <span class="badge bg-primary position-absolute top-0 start-0 m-3 fs-6">Más Vendido</span>
+          <img src="{% static 'images/Martillo.png' %}" class="card-img-top rounded-top-4" alt="Herramientas Manuales" style="height: 220px; object-fit: cover;">
+          <div class="card-body text-center">
+            <h5 class="card-title">Herramientas Manuales</h5>
+            <p class="card-text text-secondary">Martillos, llaves, alicates y más para tus proyectos.</p>
+            <a href="{% url 'productos' %}" class="btn btn-outline-primary btn-sm">Ver productos</a>
           </div>
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="card h-100">
-          <img src="{% static 'images/atornilladorelectrico.jpg' %}" class="card-img-top" alt="Atornillador">
-          <div class="card-body">
-            <h5 class="card-title">Atornillador Eléctrico</h5>
-            <p class="card-text">$19.990</p>
+
+      <div class="col-md-4 position-relative">
+        <div class="card h-100 shadow-sm border-0 rounded-4 hover-shadow">
+          <span class="badge bg-success position-absolute top-0 start-0 m-3 fs-6">Nuevo</span>
+          <img src="{% static 'images/atornilladorelectrico.jpg' %}" class="card-img-top rounded-top-4" alt="Herramientas Eléctricas" style="height: 220px; object-fit: cover;">
+          <div class="card-body text-center">
+            <h5 class="card-title">Herramientas Eléctricas</h5>
+            <p class="card-text text-secondary">Taladros, atornilladores y más para mayor precisión y rapidez.</p>
+            <a href="{% url 'productos' %}" class="btn btn-outline-success btn-sm">Ver productos</a>
           </div>
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="card h-100">
-          <img src="{% static 'images/pinturainterior.jpg' %}" class="card-img-top" alt="Pintura">
-          <div class="card-body">
-            <h5 class="card-title">Pintura para interior</h5>
-            <p class="card-text">$12.990</p>
+
+      <div class="col-md-4 position-relative">
+        <div class="card h-100 shadow-sm border-0 rounded-4 hover-shadow">
+          <span class="badge bg-warning text-dark position-absolute top-0 start-0 m-3 fs-6">En oferta</span>
+          <img src="{% static 'images/pinturainterior.jpg' %}" class="card-img-top rounded-top-4" alt="Pinturas y Acabados" style="height: 220px; object-fit: cover;">
+          <div class="card-body text-center">
+            <h5 class="card-title">Pinturas y Acabados</h5>
+            <p class="card-text text-secondary">Colores y texturas para renovar tus espacios.</p>
+            <a href="{% url 'productos' %}" class="btn btn-outline-warning btn-sm">Ver productos</a>
           </div>
         </div>
       </div>
@@ -55,16 +87,66 @@
   </div>
 </section>
 
+<!-- Filosofía con íconos -->
+<section class="py-5 bg-light border-top">
+  <div class="container">
+    <h2 class="text-center mb-5 fw-semibold">Nuestra Filosofía</h2>
+    <div class="row text-center">
+      <div class="col-md-4 mb-4">
+        <i class="bi bi-bullseye text-primary fs-1 mb-3"></i>
+        <h5 class="text-primary fw-semibold">Misión</h5>
+        <p class="text-muted px-3">Ofrecer productos de calidad en ferretería y construcción que satisfagan las necesidades de nuestros clientes a lo largo de Chile.</p>
+      </div>
+      <div class="col-md-4 mb-4">
+        <i class="bi bi-binoculars text-success fs-1 mb-3"></i>
+        <h5 class="text-success fw-semibold">Visión</h5>
+        <p class="text-muted px-3">Ser líderes en soluciones constructivas a nivel nacional, innovando y facilitando la experiencia de compra.</p>
+      </div>
+      <div class="col-md-4 mb-4">
+        <i class="bi bi-shield-check text-warning fs-1 mb-3"></i>
+        <h5 class="text-warning fw-semibold">Valores</h5>
+        <p class="text-muted px-3">Compromiso, calidad, cercanía con el cliente y responsabilidad en cada proyecto que emprendemos.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Sección Nosotros con fondo suave -->
+<section class="py-5" style="background-color: #f8f9fa;">
+  <div class="container">
+    <h2 class="text-center mb-3 fw-semibold">¿Quiénes somos?</h2>
+    <p class="text-center text-secondary fs-5 px-3 px-md-5">En FERREMAS somos una empresa chilena con más de 10 años ofreciendo productos de ferretería y construcción en todo el país. Con 7 sucursales y ahora con presencia online, llevamos calidad a tu hogar o proyecto.</p>
+  </div>
+</section>
+
+<!-- BOTÓN FLOTANTE WHATSAPP -->
+<a href="https://api.whatsapp.com/send?phone=56912345678&text=Hola%20FERREMAS,%20necesito%20ayuda%20con..." 
+   class="btn btn-success btn-lg rounded-circle shadow-lg"
+   style="position: fixed; bottom: 20px; right: 20px; z-index: 1000; transition: transform 0.2s ease-in-out;"
+   onmouseover="this.style.transform='scale(1.1)';" onmouseout="this.style.transform='scale(1)';">
+  <i class="bi bi-whatsapp" style="font-size: 1.7rem;"></i>
+</a>
+
 <!-- Footer -->
-<footer class="bg-dark text-white py-4">
+<footer class="bg-dark text-white py-4 mt-5">
   <div class="container text-center">
-    <p>FERREMAS &copy; 2025 - Todos los derechos reservados</p>
+    <p class="mb-1">FERREMAS &copy; 2025 - Todos los derechos reservados</p>
     <p>Contacto: contacto@ferremas.cl | +56 9 1234 5678</p>
   </div>
 </footer>
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+<style>
+  /* Efecto hover para tarjetas */
+  .hover-shadow:hover {
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    transform: translateY(-5px);
+    transition: all 0.3s ease;
+  }
+</style>
+
 {% endblock %}

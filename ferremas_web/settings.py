@@ -153,6 +153,10 @@ EMAIL_HOST_USER = 'stavrakopulos@gmail.com'
 EMAIL_HOST_PASSWORD = 'ygvl tbom oprf vthp'  
 DEFAULT_FROM_EMAIL = 'Ferremas <stavrakopulos@gmail.com>'
 
+STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
 
 

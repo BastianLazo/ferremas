@@ -8,10 +8,10 @@
   <div class="row">
     {% for producto in productos %}
     <div class="col-md-4">
-      <div class="card h-100">
+      <div class="card h-100 producto-card">
         <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}">
         <div class="card-body">
-          <h5 class="card-title">{{ producto.nombre }}</h5>
+          <h5 class="card-title producto-nombre">{{ producto.nombre }}</h5>
           {% if producto.descuento > 0 %}
           <p>
             <del class="text-muted">${{ producto.precio|punto_miles }}</del><br>

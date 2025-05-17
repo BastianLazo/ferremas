@@ -23,7 +23,8 @@ from django.utils import timezone
 
 
 def homepage(request):
-    return render(request, 'home/index.html')
+    productos = Producto.objects.all()[:5]  # Muestra los 5 primeros
+    return render(request, 'home/index.html', {'productos': productos})
 
 def productos(request):
     productos = Producto.objects.all()
