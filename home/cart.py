@@ -61,3 +61,7 @@ class Cart:
         for item in self.cart.values():
             total += item['precio'] * item['cantidad']
         return int(total)
+    
+    def clear(self):
+        self.cart = {}
+        self.save()

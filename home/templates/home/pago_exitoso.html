@@ -1,15 +1,10 @@
-from .models import Compra, CompraItem
+{% extends "home/base_generic.html" %}
+{% load format_filters %}
 
-def pago_exitoso(request):
-    cart = Cart(request)
-    if request.user.is_authenticated:
-        compra = Compra.objects.create(usuario=request.user, total=cart.get_total())
-        for item in cart:
-            CompraItem.objects.create(
-                compra=compra,
-                producto=item['producto'],
-                cantidad=item['cantidad'],
-                precio_unitario=item['producto'].precio
-            )
-    cart.clear()
-    return render(request, 'home/pago_exitoso.html')
+{% block content %}
+<div class="container mt-5 text-center">
+    <h1 class="text-success">¡Gracias por tu compra!</h1>
+    <p>Tu pago se ha procesado exitosamente.</p>
+    <a href="{% url 'homepage' %}" class="btn btn-primary mt-3">Volver al inicio</a>
+</div>
+{% endblock %}

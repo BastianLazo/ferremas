@@ -20,6 +20,8 @@ import json
 from django.contrib.auth.decorators import user_passes_test
 from .models import SolicitudProducto, Producto
 from django.utils import timezone
+from .models import CompraItem
+
 
 
 def homepage(request):
@@ -62,10 +64,31 @@ def ver_carrito(request):
     return render(request, 'home/carrito.html', {'cart': cart})
 
 
+@login_required
 def pago_exitoso(request):
     cart = Cart(request)
+
+    if not cart.cart:
+        return redirect('homepage')  # evita registrar compras vacías
+
+    compra = Compra.objects.create(
+        usuario=request.user,
+        total=cart.get_total()
+    )
+
+    for key, item in cart.get_items():
+        CompraItem.objects.create(
+            compra=compra,
+            producto_id=item['producto_id'],
+            cantidad=item['cantidad'],
+            precio_unitario=item['precio']
+        )
+
     cart.clear()
-    return render(request, 'pago_exitoso.html')
+
+    return render(request, 'home/pago_exitoso.html')
+
+
 
 def incrementar_cantidad(request, producto_id):
     producto = get_object_or_404(Producto, id=producto_id)
@@ -124,34 +147,38 @@ def custom_logout_view(request):
 
 from django.views.decorators.http import require_POST
 
+from django.urls import reverse
+
 def pagar_mercadopago(request):
     cart = Cart(request)
     total = cart.get_total()
 
     sdk = mercadopago.SDK(settings.MERCADOPAGO_ACCESS_TOKEN)
 
+    success_url = "https://19d2-186-78-253-73.ngrok-free.app/pago_exitoso/"
+
+
     preference_data = {
-        "items": [
-            {
-                "title": "Compra en FERREMAS",
-                "quantity": 1,
-                "unit_price": float(total),
-            }
-        ],
-        "back_urls": {
-            "success": "https://www.google.com",  
-            "failure": "https://www.google.com",
-            "pending": "https://www.google.com",
-        },
-        "auto_return": "approved",
-    }
+    "items": [
+        {
+            "title": "Compra en FERREMAS",
+            "quantity": 1,
+            "unit_price": float(total),
+        }
+    ],
+    "back_urls": {
+        "success": success_url,
+        "failure": success_url,
+        "pending": success_url,
+    },
+    "auto_return": "approved",
+}
+
 
     preference_response = sdk.preference().create(preference_data)
-    print("Respuesta MercadoPago:", preference_response)
 
     if "init_point" in preference_response["response"]:
-        init_point = preference_response["response"]["init_point"]
-        return redirect(init_point)
+        return redirect(preference_response["response"]["init_point"])
     else:
         return render(request, "home/error_pago.html", {
             "error": preference_response["response"]
@@ -223,14 +250,10 @@ def restablecer_contrasena(request, username):
             messages.error(request, 'Las contraseñas no coinciden.')
     return render(request, 'home/restablecer_contrasena.html')
 
-@login_required
 def historial_compras(request):
     compras = Compra.objects.filter(usuario=request.user).order_by('-fecha')
     return render(request, 'home/historial_compras.html', {'compras': compras})
 
-
-from django.contrib.auth.views import LoginView
-from django.urls import reverse_lazy
 
 class CustomLoginView(LoginView):
     template_name = 'home/login.html'
