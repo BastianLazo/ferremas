@@ -140,7 +140,9 @@ MERCADOPAGO_ACCESS_TOKEN = "APP_USR-7949899935133965-050900-9ddcaf59cd0740a41c44
 
 
 
+LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
+
 
 from dotenv import load_dotenv 
 META_WA_TOKEN = os.getenv("META_WA_TOKEN")
@@ -162,3 +164,6 @@ STATICFILES_DIRS = [
 
 
 CSRF_TRUSTED_ORIGINS = ['https://19d2-186-78-253-73.ngrok-free.app']
+
+
+

@@ -21,11 +21,11 @@ from django.contrib.auth.decorators import user_passes_test
 from .models import SolicitudProducto, Producto
 from django.utils import timezone
 from .models import CompraItem
-
+from .models import Compra
 
 
 def homepage(request):
-    productos = Producto.objects.all()[:5]  # Muestra los 5 primeros
+    productos = Producto.objects.all()[:5]  
     return render(request, 'home/index.html', {'productos': productos})
 
 def productos(request):
@@ -69,7 +69,7 @@ def pago_exitoso(request):
     cart = Cart(request)
 
     if not cart.cart:
-        return redirect('homepage')  # evita registrar compras vacías
+        return redirect('homepage')  
 
     compra = Compra.objects.create(
         usuario=request.user,
@@ -187,7 +187,7 @@ def pagar_mercadopago(request):
 
 def contacto(request):
     if request.method == 'POST':
-        numero = "56992249556"  # Número completo con código de país (Chile)
+        numero = "56992249556"  
 
         data = {
             "messaging_product": "whatsapp",
@@ -258,14 +258,18 @@ def historial_compras(request):
 class CustomLoginView(LoginView):
     template_name = 'home/login.html'
 
-    def get_success_url(self):
-        user = self.request.user
-        if user.is_superuser:
-            return reverse_lazy('admin_home')
-        elif user.groups.filter(name='Bodeguero').exists():
-            return reverse_lazy('bodeguero_home')
-        return reverse_lazy('homepage')  # ✅ ESTA ES LA CORRECTA
+    def form_valid(self, form):
+        """ Redirecciona según grupo una vez autenticado. """
+        user = form.get_user()
+        login(self.request, user)  # Asegura el login
 
+        if user.is_superuser:
+            return redirect('admin_home')
+        elif user.groups.filter(name='Bodeguero').exists():
+            return redirect('bodeguero_home')
+        elif user.groups.filter(name='Vendedor').exists():
+            return redirect('compras_pendientes_vendedor')
+        return redirect('homepage')
 
 
 @login_required
@@ -323,6 +327,9 @@ def eliminar_producto(request, producto_id):
     producto = get_object_or_404(Producto, id=producto_id)
     producto.delete()
     return redirect('listar_productos_admin')
+
+def es_vendedor(user):
+    return user.groups.filter(name='Vendedor').exists()
 
 
 def es_bodeguero(user):
@@ -407,7 +414,7 @@ def revisar_solicitudes(request):
 def aprobar_solicitud(request, solicitud_id):
     solicitud = get_object_or_404(SolicitudProducto, id=solicitud_id)
 
-    # Crear producto real
+  
     Producto.objects.create(
         nombre=solicitud.nombre,
         descripcion=solicitud.descripcion,
@@ -466,3 +473,32 @@ def rechazar_solicitud(request, solicitud_id):
         return redirect('revisar_solicitudes')
 
     return render(request, 'admin/rechazar_solicitud.html', {'solicitud': solicitud})
+
+
+
+
+@user_passes_test(es_vendedor)
+def cambiar_estado_compra(request, compra_id, nuevo_estado):
+    compra = get_object_or_404(Compra, id=compra_id)
+    compra.estado = nuevo_estado
+    compra.save()
+    return redirect('compras_pendientes_vendedor')
+
+def group_required(group_name):
+    def in_group(user):
+        return user.is_authenticated and user.groups.filter(name=group_name).exists()
+    return user_passes_test(in_group, login_url='login')
+
+
+@user_passes_test(es_bodeguero)
+def compras_pendientes_bodeguero(request):
+    compras = Compra.objects.filter(estado='pendiente').order_by('-fecha')
+    # Aquí puedes mostrar solo información de stock o preparar despacho
+    return render(request, 'bodega/compras_pendientes.html', {'compras': compras})
+
+
+@user_passes_test(es_vendedor)
+def compras_pendientes_vendedor(request):
+    compras = Compra.objects.filter(estado='pendiente').order_by('-fecha')
+    return render(request, 'vendedor/compras_pendientes_vendedor.html', {'compras': compras})
+

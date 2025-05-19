@@ -5,6 +5,7 @@ from django.contrib.auth import views as auth_views
 from .views import register_view, pagar_mercadopago, CustomLoginView, admin_home
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import reverse_lazy
+from .views import CustomLoginView
 
 urlpatterns = [
     path('', views.homepage, name='homepage'),
@@ -43,6 +44,11 @@ urlpatterns = [
     path('panel/solicitudes/', views.revisar_solicitudes, name='revisar_solicitudes'),
     path('panel/solicitudes/aprobar/<int:solicitud_id>/', views.aprobar_solicitud, name='aprobar_solicitud'),
     path('panel/solicitudes/rechazar/<int:solicitud_id>/', views.rechazar_solicitud, name='rechazar_solicitud'),
+    path('bodega/compras/', views.compras_pendientes_bodeguero, name='compras_pendientes_bodeguero'),
+    path('vendedor/compras/', views.compras_pendientes_vendedor, name='compras_pendientes_vendedor'),
+    path('vendedor/compras/cambiar/<int:compra_id>/<str:nuevo_estado>/', views.cambiar_estado_compra, name='cambiar_estado_compra'),
+
+
 
 
 

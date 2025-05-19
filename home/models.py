@@ -30,7 +30,7 @@ class Compra(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     fecha = models.DateTimeField(auto_now_add=True)
     total = models.DecimalField(max_digits=10, decimal_places=2)
-
+    estado = models.CharField(max_length=20, default='pendiente')
     def __str__(self):
         return f"Compra #{self.id} - {self.usuario.username}"
     
@@ -69,3 +69,7 @@ class SolicitudProducto(models.Model):
 
     def __str__(self):
         return f"Solicitud: {self.nombre} (por {self.creado_por.username})"
+    
+
+
+    
