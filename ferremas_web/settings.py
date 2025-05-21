@@ -145,8 +145,9 @@ LOGIN_REDIRECT_URL = '/'
 
 
 from dotenv import load_dotenv 
-META_WA_TOKEN = os.getenv("META_WA_TOKEN")
-META_WA_PHONE_ID = os.getenv("META_WA_PHONE_ID")
+load_dotenv
+META_WA_TOKEN="EAAJcoUHEwbwBO3ZCQfkhp9Fig6xpG13RMGo5Unni8A4gbZAaBymW2G0xYFRiZBo35M96LE0YrrUpb28uchvplEKk5mpipy00JhhyW0pxnaQsvR0Rm4cMtvzrUXr7qVAQXF9wBop5ZCZAgDnDYvEC70Dh1QCPSc9b9Ck7CFc6YBEawCjsPosjPDelm0mOWxwBiei0h50QAgpHcLZCycyG3eOwyZCxwzI"
+META_WA_PHONE_ID="641826565684472"
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'

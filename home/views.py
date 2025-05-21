@@ -185,13 +185,24 @@ def pagar_mercadopago(request):
         })
 
 
+from django.shortcuts import render, redirect
+from django.contrib import messages
+import requests
+from django.conf import settings
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+import requests
+from django.conf import settings
+
 def contacto(request):
     if request.method == 'POST':
-        numero = "56992249556"  
+        numero_usuario = request.POST.get('numero')
+        numero_formateado = f"56{numero_usuario}"
 
         data = {
             "messaging_product": "whatsapp",
-            "to": numero,
+            "to": numero_formateado,
             "type": "template",
             "template": {
                 "name": "hello_world",
@@ -207,7 +218,7 @@ def contacto(request):
         }
 
         response = requests.post(
-            "https://graph.facebook.com/v22.0/641826565684472/messages",
+            f"https://graph.facebook.com/v22.0/{settings.META_WA_PHONE_ID}/messages",
             headers=headers,
             json=data
         )
@@ -219,7 +230,16 @@ def contacto(request):
 
         return redirect('contacto')
 
+    # Si no es POST, simplemente renderiza el formulario
     return render(request, 'home/contacto.html')
+
+
+
+
+
+
+
+
 
 
 def olvide_contrasena(request):

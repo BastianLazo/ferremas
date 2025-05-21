@@ -7,7 +7,7 @@
 <div class="container mt-5">
     <h2 class="mb-4">Contacto por WhatsApp</h2>
 
-    <!-- Mostrar mensatoma jes de éxito o error -->
+    <!-- Mostrar mensajes de éxito o error -->
     {% if messages %}
         {% for message in messages %}
             <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}" role="alert">
@@ -21,8 +21,8 @@
         {% csrf_token %}
 
         <div class="mb-3">
-            <label for="numero" class="form-label">Número de teléfono (sin +56):</label>
-            <input type="text" class="form-control" id="numero" name="numero" required placeholder="Ej: 912345678">
+            <label for="numero" class="form-label">Número de teléfono <strong>(sin +56)</strong>:</label>
+            <input type="text" class="form-control" id="numero" name="numero" required pattern="\d{9}" placeholder="Ej: 912345678" title="Ingresa un número chileno válido de 9 dígitos.">
         </div>
 
         <div class="mb-3">
