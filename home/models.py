@@ -31,6 +31,8 @@ class Compra(models.Model):
     fecha = models.DateTimeField(auto_now_add=True)
     total = models.DecimalField(max_digits=10, decimal_places=2)
     estado = models.CharField(max_length=20, default='pendiente')
+    archivo_boleta = models.FileField(upload_to='boletas/', null=True, blank=True)  # <--- NUEVO CAMPO
+
     def __str__(self):
         return f"Compra #{self.id} - {self.usuario.username}"
     

@@ -3,12 +3,14 @@
 
 {% block content %}
 <h2>Historial de Compras</h2>
+
 {% if compras %}
     <ul class="list-group">
         {% for compra in compras %}
             <li class="list-group-item">
                 <strong>Fecha:</strong> {{ compra.fecha|date:"j \d\e F \d\e Y \a \l\a\s H:i" }}<br>
                 <strong>Total:</strong> ${{ compra.total|punto_miles }}<br>
+
                 <ul>
                     {% for item in compra.items.all %}
                         <li style="display: flex; align-items: center; margin-top: 5px;">
@@ -17,6 +19,12 @@
                         </li>
                     {% endfor %}
                 </ul>
+
+                {% if compra.archivo_boleta %}
+                    <a href="{{ compra.archivo_boleta.url }}" class="btn btn-sm btn-primary mt-2" target="_blank">
+                        Descargar Boleta
+                    </a>
+                {% endif %}
             </li>
         {% endfor %}
     </ul>

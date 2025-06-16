@@ -1,0 +1,47 @@
+<body>
+    <div class="titulo">Boleta de Compra - FERREMAS</div>
+
+    <div class="resumen">
+        <strong>Compra N°:</strong> {{ compra.id }}<br>
+        <strong>Cliente:</strong> {{ compra.usuario.get_full_name }}<br>
+        <strong>RUT:</strong> {{ compra.usuario.userprofile.rut }}<br>
+        <strong>Dirección:</strong> {{ compra.usuario.userprofile.address }}<br>
+        <strong>Teléfono:</strong> {{ compra.usuario.userprofile.phone }}<br>
+        <strong>Fecha:</strong> {{ compra.fecha|date:"d/m/Y H:i" }}<br>
+        <strong>Método de pago:</strong> MercadoPago<br>
+        <strong>Estado:</strong> {{ compra.estado }}
+    </div>
+
+    <hr>
+
+    <h4>Detalle de productos:</h4>
+    <table width="100%" border="1" cellspacing="0" cellpadding="5">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>ID</th>
+                <th>Precio Original</th>
+                <th>Descuento</th>
+                <th>Precio Final</th>
+                <th>Cantidad</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in compra.items.all %}
+                <tr>
+                    <td>{{ item.producto.nombre }}</td>
+                    <td>{{ item.producto.id }}</td>
+                    <td>${{ item.producto.precio }}</td>
+                    <td>{{ item.producto.descuento }}%</td>
+                    <td>${{ item.precio_unitario }}</td>
+                    <td>{{ item.cantidad }}</td>
+                    <td>${{ item.subtotal }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <hr>
+    <h4>Total pagado: ${{ compra.total }}</h4>
+</body>

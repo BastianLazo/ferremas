@@ -22,6 +22,9 @@ from .models import SolicitudProducto, Producto
 from django.utils import timezone
 from .models import CompraItem
 from .models import Compra
+from django.template.loader import render_to_string
+from xhtml2pdf import pisa
+from io import BytesIO
 
 
 def homepage(request):
@@ -69,7 +72,7 @@ def pago_exitoso(request):
     cart = Cart(request)
 
     if not cart.cart:
-        return redirect('homepage')  
+        return redirect('homepage')
 
     compra = Compra.objects.create(
         usuario=request.user,
@@ -84,8 +87,25 @@ def pago_exitoso(request):
             precio_unitario=item['precio']
         )
 
-    cart.clear()
+    # Generar boleta en PDF
+    context = {'compra': compra}
+    html = render_to_string('home/boleta_pdf.html', context)
+    result = BytesIO()
+    pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result)
 
+    if not pdf.err:
+        filename = f"boleta_compra_{compra.id}.pdf"
+        carpeta_boletas = os.path.join(settings.MEDIA_ROOT, 'boletas')
+        os.makedirs(carpeta_boletas, exist_ok=True)
+
+        ruta_archivo = os.path.join(carpeta_boletas, filename)
+        with open(ruta_archivo, 'wb') as output:
+            output.write(result.getvalue())
+
+        compra.archivo_boleta = f'boletas/{filename}'
+        compra.save()
+
+    cart.clear()
     return render(request, 'home/pago_exitoso.html')
 
 
@@ -155,7 +175,7 @@ def pagar_mercadopago(request):
 
     sdk = mercadopago.SDK(settings.MERCADOPAGO_ACCESS_TOKEN)
 
-    success_url = "https://19d2-186-78-253-73.ngrok-free.app/pago_exitoso/"
+    success_url = "https://99cd-186-78-235-75.ngrok-free.app/pago_exitoso/"
 
 
     preference_data = {

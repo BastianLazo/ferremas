@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-$+ro2g_892r1_9t=zl1+#@pc^^0$o0-4y*4s79#7%$!&cw)eoz
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '19d2-186-78-253-73.ngrok-free.app']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '99cd-186-78-235-75.ngrok-free.app']
 
 
 
@@ -130,7 +130,7 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 from decouple import config
 
@@ -164,7 +164,7 @@ STATICFILES_DIRS = [
 ]
 
 
-CSRF_TRUSTED_ORIGINS = ['https://19d2-186-78-253-73.ngrok-free.app']
+CSRF_TRUSTED_ORIGINS = ['https://99cd-186-78-235-75.ngrok-free.app']
 
 
 
